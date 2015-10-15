@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
 
-  "name": "GPC",
+  "name": "Gartner Post Call",
   "description": "Get Document IDs for each tab",
   "version": "1.0",
 
