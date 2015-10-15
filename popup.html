@@ -6,19 +6,27 @@
  -->
 <html>
   <head>
-    <title>Getting Started Extension's Popup</title>
+    <title>Gartner Postcall Chrome Extension</title>
     <style>
-      body {
-        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
-        font-size: 100%;
+      div{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 10pt;
+        width: 200px;
+        height:20px;
+        vertical-align: middle;
+        margin-bottom: 1em;
       }
-      #status {
-        /* avoid an excessively wide status text */
-        white-space: pre;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        max-width: 400px;
+      img{
+        vertical-align: middle;
       }
+      span{
+        vertical-align: middle;
+      }
+
+      p{
+        margin-left: 25px;
+      }
+      
     </style>
 
     <!--
@@ -29,9 +37,11 @@
      -->
   </head>
   <body>
-    <div id="status"></div>
-    <div id="copytext"></div>
+    <div id="Copy">
+      <img src="Success.png">
+      <span>PostCall Query in Clipboard</span>
+    </div>
+    <p>Use Ctrl + V to paste query</p>
   </body>
   <script src="popup.js"></script>
 </html>
-
