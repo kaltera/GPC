@@ -16,12 +16,29 @@ function copyToClipboard( text ){
 
 }
 
-// Input for chrome.tabs.query
-var queryInfo = {
-  };
+// Function to add Research_ID in the query
+function add_id( research_id ){
+  
+    // If the list of Documents is empty, then it's the first document
+  if(gartner_ids == ""){
+    gartner_ids = research_id;
+  }
+
+  // Else, I add the document ID with a preceding "OR". The indexOf makes sure that this ID has not been added already
+  else{
+    if(gartner_ids.indexOf(research_id) == -1){
+      gartner_ids += " OR " + research_id;
+    }
+  }
+}
+
 
 // Creating variable which will contain the PC query
 var gartner_ids = "";
+
+// Input for chrome.tabs.query
+var queryInfo = {
+  };
 
 // Callback function on the tabs
 chrome.tabs.query(queryInfo, function(tabs) {
@@ -35,8 +52,8 @@ chrome.tabs.query(queryInfo, function(tabs) {
     // variable to get the url of the tab
     var url = tabs[tab].url;
 
-    // If the page is on a Gartner Document
-    if(url.indexOf("gartner.com/document") != -1){
+    // If the page is on a Gartner Document.farewell
+    if(url.indexOf("gartner.com/document") != -1 || url.indexOf("exp-reports/research") != -1){
 
       // We get the document ID through the regular expression
       var url_match = url.match(pattern)[0];
@@ -46,22 +63,23 @@ chrome.tabs.query(queryInfo, function(tabs) {
 
         // I store the ID in the variable doc_type
         var doc_type = url_match.split("/");
+        var new_id = "";
 
-        // If the list of Documents is empty, then it's the first document
-        if(gartner_ids == ""){
-          gartner_ids = doc_type[1];
+        if(doc_type[0] == "research"){
+            // Send a request to the content script to get the real Note ID
+            chrome.tabs.sendMessage(tabs[tab].id,{type: "research"},function(response) {
+              new_id = response.research_id;
+              add_id(new_id);
+            });
         }
-
-        // Else, I add the document ID with a preceding "OR". The indexOf makes sure that this ID has not been added already
         else{
-          if(gartner_ids.indexOf(doc_type[1]) == -1){
-            gartner_ids += " OR " + doc_type[1];
-          }
+          new_id = doc_type[1];
+          add_id(new_id);
         }
+
       }
     }
-
-  // Once the list of Document IDs is complete, I launch the copyToClipboard function
-  copyToClipboard(gartner_ids);
   }
 });
+// Once the list of Document IDs is complete, I launch the copyToClipboard function
+copyToClipboard(gartner_ids);
