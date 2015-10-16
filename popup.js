@@ -30,6 +30,8 @@ function add_id( research_id ){
       gartner_ids += " OR " + research_id;
     }
   }
+  // Once the list of Document IDs is complete, I launch the copyToClipboard function
+  copyToClipboard(gartner_ids);
 }
 
 
@@ -44,7 +46,7 @@ var queryInfo = {
 chrome.tabs.query(queryInfo, function(tabs) {
 
   // Pattern to identify the Document ID in the URL
-  var pattern = /([document\v/]|[research\v/]){9}[0-9]{5,10}/g;
+  var pattern = /([document\v/]{9}|[research\v/]{9}|[overview\v/]{9}|[webinar\v/]{8})[0-9]{5,10}/g;
 
   // For each tab in the current browser
   for (tab in tabs){
@@ -52,8 +54,8 @@ chrome.tabs.query(queryInfo, function(tabs) {
     // variable to get the url of the tab
     var url = tabs[tab].url;
 
-    // If the page is on a Gartner Document.farewell
-    if(url.indexOf("gartner.com/document") != -1 || url.indexOf("exp-reports/research") != -1){
+    // If the page is on a Gartner Document
+    if(url.indexOf("gartner.com/document") != -1 || url.indexOf("exp-reports/research") != -1 || url.indexOf("special-reports/overview") != -1 || url.indexOf("gartner.com/webinar") != -1){
 
       // We get the document ID through the regular expression
       var url_match = url.match(pattern)[0];
@@ -64,10 +66,11 @@ chrome.tabs.query(queryInfo, function(tabs) {
         // I store the ID in the variable doc_type
         var doc_type = url_match.split("/");
         var new_id = "";
+        var special_type = doc_type[0];
 
-        if(doc_type[0] == "research"){
+        if(special_type == "research" || special_type == "overview"){
             // Send a request to the content script to get the real Note ID
-            chrome.tabs.sendMessage(tabs[tab].id,{type: "research"},function(response) {
+            chrome.tabs.sendMessage(tabs[tab].id,{type: "special"},function(response) {
               new_id = response.research_id;
               add_id(new_id);
             });
@@ -81,5 +84,3 @@ chrome.tabs.query(queryInfo, function(tabs) {
     }
   }
 });
-// Once the list of Document IDs is complete, I launch the copyToClipboard function
-copyToClipboard(gartner_ids);
