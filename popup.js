@@ -46,7 +46,7 @@ var queryInfo = {
 chrome.tabs.query(queryInfo, function(tabs) {
 
   // Pattern to identify the Document ID in the URL
-  var pattern = /([document\v/]{9}|[research\v/]{9}|[overview\v/]{9}|[webinar\v/]{8})[0-9]{5,10}/g;
+  var pattern = /(document|code|overview|webinar|research)\/[0-9]{5,10}/g;
 
   // For each tab in the current browser
   for (tab in tabs){
